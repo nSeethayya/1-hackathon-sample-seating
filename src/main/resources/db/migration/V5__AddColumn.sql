@@ -1,0 +1,1 @@
+ALTER TABLE seat ADD user_name VARCHAR(255);

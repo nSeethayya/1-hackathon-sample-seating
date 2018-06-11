@@ -20,11 +20,11 @@ public class Seat {
 	private Long id;
 
 	private String name;
+	private Boolean available;
+	private String userName;
 
 	@JsonBackReference
-	@ManyToOne(fetch= FetchType.LAZY)
-	@JoinColumn(name="section_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "section_id")
 	private Section section;
-	
-	private Boolean available;
 }
