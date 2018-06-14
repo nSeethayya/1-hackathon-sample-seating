@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.krishna.seatbooking;
+package com.krishna.seatbooking.controller;
 
 import java.util.Calendar;
 import java.util.List;
@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.krishna.seatbooking.dto.User;
 import com.krishna.seatbooking.dto.UserForm;
+import com.krishna.seatbooking.service.UserDetailsServiceImpl;
+import com.krishna.seatbooking.service.UserService;
 
 /**
  * @author seethayya.n
@@ -32,11 +34,11 @@ public class UserController {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	private MyUserDetailsService userDetailsService;
+	private UserService userService;
 	private UserValidator userValidator;
 
-	public UserController(MyUserDetailsService userDetailsService, UserValidator userValidator) {
-		this.userDetailsService = userDetailsService;
+	public UserController(UserService userService, UserValidator userValidator) {
+		this.userService = userService;
 		this.userValidator = userValidator;
 	}
 
@@ -60,8 +62,8 @@ public class UserController {
 			model.addAttribute("countries", addCounties());
 			return "registration";
 		}
-		userDetailsService.save(buildUser(userForm));
-		userDetailsService.autologin(userForm.getEmail(), userForm.getPassword());
+		userService.save(buildUser(userForm));
+		userService.autologin(userForm.getEmail(), userForm.getPassword());
 
 		return "redirect:/home";
 	}

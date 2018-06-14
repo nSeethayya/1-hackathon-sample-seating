@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.krishna.seatbooking;
+package com.krishna.seatbooking.controller;
 
 import java.util.regex.Pattern;
 

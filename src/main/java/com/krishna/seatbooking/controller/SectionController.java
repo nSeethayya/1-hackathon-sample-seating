@@ -1,4 +1,4 @@
-package com.krishna.seatbooking;
+package com.krishna.seatbooking.controller;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.krishna.seatbooking.dto.Seat;
 import com.krishna.seatbooking.dto.Section;
 import com.krishna.seatbooking.dto.SectionForm;
+import com.krishna.seatbooking.helper.UserDetailsHeper;
 import com.krishna.seatbooking.repository.SectionRepository;
+import com.krishna.seatbooking.service.SectionServiceImpl;
 
 import lombok.val;
 
@@ -32,9 +34,9 @@ public class SectionController {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	private SectionRepository sectionsRepository;
-	private SectionService sectionService;
+	private SectionServiceImpl sectionService;
 
-	public SectionController(SectionRepository sectionsRepository, SectionService sectionService) {
+	public SectionController(SectionRepository sectionsRepository, SectionServiceImpl sectionService) {
 		this.sectionsRepository = sectionsRepository;
 		this.sectionService = sectionService;
 	}
@@ -43,7 +45,7 @@ public class SectionController {
 	public String home(Model model) {
 		val x = sectionsRepository.findAll();
 		model.addAttribute("sections", x);
-		String userName = MyUserDetailsService.findLoggedInUsername();
+		String userName = UserDetailsHeper.findLoggedInUsername();
 		model.addAttribute("username", userName);
 		model.addAttribute("sectionForm", new SectionForm());
 		Optional<List<Section>> bookedSeats = sectionsRepository.findBySeatsUserName(userName);
@@ -56,7 +58,6 @@ public class SectionController {
 		}
 
 		model.addAttribute("bookingHistory", bookingHistory);
-
 		return "home";
 	}
 
@@ -71,7 +72,7 @@ public class SectionController {
 	public String bookTickets(@ModelAttribute("sectionForm") SectionForm sectionForm, BindingResult bindingResult,
 			Model model) {
 		sectionService.bookSeat(sectionForm.getSectionId(), sectionForm.getSeatId(),
-				MyUserDetailsService.findLoggedInUsername());
+				UserDetailsHeper.findLoggedInUsername());
 		return "redirect:/home";
 	}
 
