@@ -22,8 +22,7 @@ import com.krishna.seatbooking.dto.Seat;
 import com.krishna.seatbooking.dto.Section;
 import com.krishna.seatbooking.dto.SectionForm;
 import com.krishna.seatbooking.helper.UserDetailsHeper;
-import com.krishna.seatbooking.repository.SectionRepository;
-import com.krishna.seatbooking.service.SectionServiceImpl;
+import com.krishna.seatbooking.service.SectionService;
 
 import lombok.val;
 
@@ -33,22 +32,20 @@ public class SectionController {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	private SectionRepository sectionsRepository;
-	private SectionServiceImpl sectionService;
+	private SectionService sectionService;
 
-	public SectionController(SectionRepository sectionsRepository, SectionServiceImpl sectionService) {
-		this.sectionsRepository = sectionsRepository;
+	public SectionController( SectionService sectionService) {
 		this.sectionService = sectionService;
 	}
 
 	@RequestMapping(value = { "/", "/home" })
 	public String home(Model model) {
-		val x = sectionsRepository.findAll();
+		val x = sectionService.findAll();
 		model.addAttribute("sections", x);
 		String userName = UserDetailsHeper.findLoggedInUsername();
 		model.addAttribute("username", userName);
 		model.addAttribute("sectionForm", new SectionForm());
-		Optional<List<Section>> bookedSeats = sectionsRepository.findBySeatsUserName(userName);
+		Optional<List<Section>> bookedSeats = sectionService.findBySeatsUserName(userName);
 		Set<SectionForm> bookingHistory = new HashSet<>();
 		if (bookedSeats.isPresent()) {
 			List<Section> sections = bookedSeats.get();
@@ -64,7 +61,7 @@ public class SectionController {
 	@GetMapping(value = "/findSeats/{sectionId}")
 	@ResponseBody
 	public List<Seat> findSeats(@PathVariable(value = "sectionId") Long sectionId, Model model) {
-		val x = sectionsRepository.findById(sectionId);
+		val x = sectionService.findById(sectionId);
 		return x.get().getSeats();
 	}
 
