@@ -14,14 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.krishna.seatbooking.dto.User;
 import com.krishna.seatbooking.dto.UserForm;
-import com.krishna.seatbooking.service.UserDetailsServiceImpl;
 import com.krishna.seatbooking.service.UserService;
 
 /**
@@ -35,42 +33,31 @@ public class UserController {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	private UserService userService;
-	private UserValidator userValidator;
+	private UserFormValidator userFormValidator;
 
-	public UserController(UserService userService, UserValidator userValidator) {
+	public UserController(UserService userService, UserFormValidator userFormValidator) {
 		this.userService = userService;
-		this.userValidator = userValidator;
+		this.userFormValidator = userFormValidator;
 	}
 
-	@GetMapping(value = "/registration")
-	public String registration(Model model) {
+	@RequestMapping("/login")
+	public String login(Model model) {
 		model.addAttribute("userForm", new UserForm());
 		model.addAttribute("countries", addCounties());
-		return "registration";
-	}
-
-	public List<String> addCounties() {
-		return Stream.of("IN", "US", "UK").collect(Collectors.toList());
+		return "login";
 	}
 
 	@PostMapping(value = "/registration")
 	public String registration(@ModelAttribute("userForm") UserForm userForm, BindingResult bindingResult,
 			Model model) {
-		userValidator.validate(userForm, bindingResult);
-
+		userFormValidator.validate(userForm, bindingResult);
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("countries", addCounties());
-			return "registration";
+			return "login";
 		}
 		userService.save(buildUser(userForm));
 		userService.autologin(userForm.getEmail(), userForm.getPassword());
-
 		return "redirect:/home";
-	}
-
-	@RequestMapping("/login")
-	public String login(Model model) {
-		return "login";
 	}
 
 	private User buildUser(UserForm userForm) {
@@ -81,4 +68,7 @@ public class UserController {
 		return user;
 	}
 
+	private List<String> addCounties() {
+		return Stream.of("IN", "US", "UK").collect(Collectors.toList());
+	}
 }

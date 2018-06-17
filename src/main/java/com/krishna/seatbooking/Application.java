@@ -8,7 +8,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 @SpringBootApplication
 public class Application {
-	// HACK: password= 18a2d64c-60e5-4561-9aa9-50873dd05220
+
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}

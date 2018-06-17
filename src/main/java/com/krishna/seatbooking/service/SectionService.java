@@ -2,10 +2,12 @@ package com.krishna.seatbooking.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
 import com.krishna.seatbooking.dto.Section;
+import com.krishna.seatbooking.dto.SectionForm;
 
 public interface SectionService {
 
@@ -18,4 +20,5 @@ public interface SectionService {
 
 	Optional<List<Section>> findBySeatsUserName(String userName);
 
+	Set<SectionForm> findBookingHistory(String userName);
 }

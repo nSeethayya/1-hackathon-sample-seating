@@ -27,6 +27,17 @@
 		<h2>
 			Welcome <label style="color: blue;"> ${username}</label>
 		</h2>
+		<h6>
+			<label id="message" style="color: blue;"></label>
+		</h6>
+		<div class="pull-right">
+			<ul class="nav navbar-nav">
+				<form method="POST" action="/logout">
+					<li><button type="submit" class="btn navbar-btn btn-danger"
+							id="logout">LogOut</button></li>
+				</form>
+			</ul>
+		</div>
 
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#bookTickets">Book
@@ -35,30 +46,38 @@
 		</ul>
 		<div class="tab-content">
 			<div id="bookTickets" class="tab-pane fade in active">
-				<h3>Book</h3>
-
 				<form:form method="POST" modelAttribute="sectionForm"
 					action="/bookTickets" class="form-signin">
 					<div class="form-group">
-						<label for="sel1">Select Section:</label>
+						<div class="row">
+							<div class="col-xs-6 col-sm-6 col-md-6">
+								<label for="sel1">Select Section:</label>
+								<form:select id="sections" name='role' path="sectionId"
+									multiple="true" class="form-control">
+									<c:forEach items="${sections}" var="section">
+										<c:if test="${section.id != selectedSection}">
+											<option value="${section.id}">${section.name}</option>
+										</c:if>
+										<c:if test="${section.id == selectedSection}">
+											<option value="${section.id}" selected="selected">${section.name}</option>
+										</c:if>
+									</c:forEach>
+								</form:select>
+								<form:errors style="color: red" path="sectionId"></form:errors>
+							</div>
+							<div class="col-xs-6 col-sm-6 col-md-6">
+								<label for="sel1">Select Seat:</label>
 
-						<form:select id="sections" name='role' path="sectionId"
-							multiple="true" class="form-control">
-							<c:forEach items="${sections}" var="section">
-								<option value="${section.id}">${section.name}</option>
-							</c:forEach>
-						</form:select>
+								<form:select id="seatContainer" path="seatId" multiple="true"
+									class="form-control">
+								</form:select>
+								<form:errors style="color: red" path="seatId"></form:errors>
+							</div>
+						</div>
 					</div>
-					<div class="form-group">
-						<label for="sel1">Select Seat:</label>
-
-						<form:select id="seatContainer" path="seatId" multiple="true"
-							class="form-control">
-						</form:select>
-						<br />
-						<button id="bookTickets" class="btn btn-lg btn-primary btn-block"
-							type="submit">Book Ticket</button>
-					</div>
+					<br />
+					<button id="bookTickets" class="btn btn-lg btn-primary btn-block"
+						type="submit">Book Ticket</button>
 				</form:form>
 			</div>
 
@@ -72,6 +91,8 @@
 									<th>S.No.#</th>
 									<th>Section</th>
 									<th>Seat</th>
+									<th>Price Per Ticket</th>
+									<th>Total Cost</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -81,6 +102,8 @@
 										<td>${myIndex.index+1}</td>
 										<td>${bookedSection.sectionName}</td>
 										<td>${bookedSection.seatName}</td>
+										<td>${bookedSection.pricePerTicket}</td>
+										<td>${bookedSection.totalCost}</td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -89,13 +112,8 @@
 					<c:if test="${empty bookingHistory}">
 						<h4 style="color: red;">No booking history</h4>
 					</c:if>
-					<%-- >div> <c:forEach items="${bookingHistory}"
-					var="bookedSection"> <span>Section: ${bookedSection.sectionName}
-					Seat: ${bookedSection.seatName}</span> <br /> </c:forEach> </div>
-					--%>
 				</div>
 			</div>
-			<div id="messageStatus"></div>
 		</div>
 </body>
 </html>

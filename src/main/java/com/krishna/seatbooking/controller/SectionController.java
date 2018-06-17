@@ -1,10 +1,6 @@
 package com.krishna.seatbooking.controller;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.krishna.seatbooking.dto.Seat;
-import com.krishna.seatbooking.dto.Section;
 import com.krishna.seatbooking.dto.SectionForm;
 import com.krishna.seatbooking.helper.UserDetailsHeper;
 import com.krishna.seatbooking.service.SectionService;
@@ -33,28 +28,21 @@ public class SectionController {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	private SectionService sectionService;
+	private SectionFormValidator sectionFormValidator;
 
-	public SectionController( SectionService sectionService) {
+	public SectionController(SectionService sectionService, SectionFormValidator sectionFormValidator) {
 		this.sectionService = sectionService;
+		this.sectionFormValidator = sectionFormValidator;
 	}
 
 	@RequestMapping(value = { "/", "/home" })
 	public String home(Model model) {
+		model.addAttribute("sectionForm", new SectionForm());
 		val x = sectionService.findAll();
 		model.addAttribute("sections", x);
 		String userName = UserDetailsHeper.findLoggedInUsername();
 		model.addAttribute("username", userName);
-		model.addAttribute("sectionForm", new SectionForm());
-		Optional<List<Section>> bookedSeats = sectionService.findBySeatsUserName(userName);
-		Set<SectionForm> bookingHistory = new HashSet<>();
-		if (bookedSeats.isPresent()) {
-			List<Section> sections = bookedSeats.get();
-			bookingHistory = sections.stream().flatMap(s -> s.getSeats().stream())
-					.filter(seat -> seat.getUserName() != null && seat.getUserName().equals(userName))
-					.map(seat -> buildSectionForm(seat)).collect(Collectors.toSet());
-		}
-
-		model.addAttribute("bookingHistory", bookingHistory);
+		model.addAttribute("bookingHistory", sectionService.findBookingHistory(userName));
 		return "home";
 	}
 
@@ -68,15 +56,18 @@ public class SectionController {
 	@RequestMapping(value = "/bookTickets")
 	public String bookTickets(@ModelAttribute("sectionForm") SectionForm sectionForm, BindingResult bindingResult,
 			Model model) {
+		sectionFormValidator.validate(sectionForm, bindingResult);
+		String userName = UserDetailsHeper.findLoggedInUsername();
+		model.addAttribute("username", userName);
+		if (bindingResult.hasErrors()) {
+			val x = sectionService.findAll();
+			model.addAttribute("sections", x);
+			model.addAttribute("selectedSection", sectionForm.getSectionId());
+			model.addAttribute("bookingHistory", sectionService.findBookingHistory(userName));
+			return "home";
+		}
 		sectionService.bookSeat(sectionForm.getSectionId(), sectionForm.getSeatId(),
 				UserDetailsHeper.findLoggedInUsername());
-		return "redirect:/home";
-	}
-
-	private SectionForm buildSectionForm(Seat seat) {
-		SectionForm sectionForm = new SectionForm();
-		sectionForm.setSectionName(seat.getSection().getName());
-		sectionForm.setSeatName(seat.getName());
-		return sectionForm;
+		return "redirect:/home?ticketBooked";
 	}
 }

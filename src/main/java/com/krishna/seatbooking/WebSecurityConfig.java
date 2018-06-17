@@ -1,6 +1,5 @@
 package com.krishna.seatbooking;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,28 +16,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
 	private UserDetailsService userDetailsService;
+
+	public WebSecurityConfig(UserDetailsService userDetailsService) {
+		super();
+		this.userDetailsService = userDetailsService;
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		/*
-		 * http.authorizeRequests().antMatchers("/public/**").permitAll().anyRequest().
-		 * authenticated().and().httpBasic() .and().csrf().disable();
-		 */
-
 		http.authorizeRequests().antMatchers("/css/**", "/js/**", "/registration").permitAll().anyRequest()
-				.authenticated().and().formLogin().loginPage("/login").permitAll().and().logout().permitAll();
+				.authenticated().and().formLogin().loginPage("/login").permitAll().and().logout().permitAll()
+				.deleteCookies("JSESSIONID").and().csrf().disable();
 	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-
-	public static void main(String[] args) {
-		System.out.println(new BCryptPasswordEncoder().encode("admin"));
 	}
 
 	@Bean
@@ -54,20 +49,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-
-	/*
-	 * @Autowired public void configureGlobal(AuthenticationManagerBuilder auth)
-	 * throws Exception {
-	 * auth.inMemoryAuthentication().withUser("seethayya").password("{noop}s18n").
-	 * roles("USER"); }
-	 */
-
-	/*
-	 * @Bean
-	 * 
-	 * @Override public UserDetailsService userDetailsService() { UserDetails user =
-	 * User.withDefaultPasswordEncoder().username("user").password("password").roles
-	 * ("USER") .build(); return new InMemoryUserDetailsManager(user); }
-	 */
-
 }

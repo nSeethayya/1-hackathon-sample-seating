@@ -36,6 +36,8 @@ public class SectionControllerTest {
 	private MockMvc mvc;
 	@MockBean
 	private SectionService sectionService;
+	@MockBean
+	private SectionFormValidator sectionFormValidator;
 	private JacksonTester<List<Seat>> seatsJson;
 	private JacksonTester<List<Section>> sectionsJson;
 

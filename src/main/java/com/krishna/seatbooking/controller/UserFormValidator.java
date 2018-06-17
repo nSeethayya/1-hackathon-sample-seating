@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -21,12 +20,15 @@ import com.krishna.seatbooking.dto.UserForm;
  *
  */
 @Component
-public class UserValidator implements Validator {
+public class UserFormValidator implements Validator {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
 	private UserDetailsService userDetailsService;
+
+	public UserFormValidator(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
 
 	@Override
 	public boolean supports(Class<?> aClass) {
@@ -37,7 +39,12 @@ public class UserValidator implements Validator {
 	public void validate(Object o, Errors errors) {
 		UserForm user = (UserForm) o;
 
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "NotEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "NotEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "location", "NotEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "NotEmpty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "country", "NotEmpty");
 		try {
 			if (userDetailsService.loadUserByUsername(user.getEmail()) != null) {
 				errors.rejectValue("email", "Duplicate.userForm.userName");

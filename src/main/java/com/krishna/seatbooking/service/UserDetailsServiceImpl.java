@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,8 +31,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
 	private UserRepository userRepository;
+
+	public UserDetailsServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -49,7 +51,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException("No user found with username: " + username);
 		}
 	}
-	
+
 	private final Collection<? extends GrantedAuthority> getAuthorities(final Collection<Role> roles) {
 		List<String> rolesList = (roles == null ? Collections.emptyList()
 				: roles.stream().map(r -> r.getName()).collect(Collectors.toList()));
