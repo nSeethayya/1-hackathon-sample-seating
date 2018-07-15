@@ -64,7 +64,7 @@
 									varStatus="myIndex">
 									<tr>
 										<td><a href="/events/${event.eventId}">${event.name}</a></td>
-										<td>${event.createdAt}</td>
+										<td>${event.eventDate}</td>
 										<td>${event.location}</td>
 										<td>${event.userHosted}</td>
 										<td><c:if test="${event.host}">
@@ -103,7 +103,7 @@
 									varStatus="myIndex">
 									<tr>
 										<td><a href="/events/${event.eventId}">${event.name}</a></td>
-										<td>${event.createdAt}</td>
+										<td>${event.eventDate}</td>
 										<td>${event.location}</td>
 										<td>${event.userHosted}</td>
 										<td><c:if test="${event.host}">
