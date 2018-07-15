@@ -3,6 +3,8 @@
  */
 package com.krishna.seatbooking.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -143,10 +145,13 @@ public class EventServiceImpl implements EventService {
 	}
 
 	private EventForm buildEventForm(User user, Event event) {
-		return EventForm.builder().createdAt(event.getCreatedAt()).eventId(event.getId()).name(event.getName())
-				.host(event.getHost().equals(user.getUserName())).userHosted(event.getHost())
-				.location(event.getLocation()).location(event.getLocation()).state(event.getState())
-				.state(event.getState()).sameState(user.getCountry().equalsIgnoreCase(event.getState()))
+		return EventForm.builder().createdAt(event.getCreatedAt())
+				.eventDate(LocalDateTime.ofInstant(event.getCreatedAt().toInstant(), ZoneId.systemDefault())
+						.format(UserDetailsHelper.DATE_FORMAT))
+				.eventId(event.getId()).name(event.getName()).host(event.getHost().equals(user.getUserName()))
+				.userHosted(event.getHost()).location(event.getLocation()).location(event.getLocation())
+				.state(event.getState()).state(event.getState())
+				.sameState(user.getCountry().equalsIgnoreCase(event.getState()))
 				.creator(user.getUserName().equals(event.getHost())).joined(isUserJoinedEvent(user, event)).build();
 	}
 

@@ -38,6 +38,16 @@ public class EventController {
 		this.eventService = eventService;
 		this.eventFormValidator = eventFormValidator;
 	}
+	
+	@GetMapping(value = { "/", "events" })
+	public String getEvents(Model model) {
+		addEventsToModel(model);
+		model.addAttribute("eventForm", new EventForm());
+		String userName = UserDetailsHelper.findLoggedInUsername();
+		model.addAttribute("username", userName);
+		model.addAttribute("states", UserDetailsHelper.US_STATES);
+		return "events";
+	}
 
 	@PostMapping("/events/create")
 	public String createEvent(@ModelAttribute("eventForm") EventForm eventForm, Model model,
@@ -132,16 +142,6 @@ public class EventController {
 		User user = userService.findByUserName(userName);
 		eventService.addMessages(messageForm.getMessage(), eventId, user);
 		return "redirect:/events/" + eventId;
-	}
-
-	@GetMapping(value = { "/", "events" })
-	public String getEvents(Model model) {
-		addEventsToModel(model);
-		model.addAttribute("eventForm", new EventForm());
-		String userName = UserDetailsHelper.findLoggedInUsername();
-		model.addAttribute("username", userName);
-		model.addAttribute("states", UserDetailsHelper.US_STATES);
-		return "events";
 	}
 
 	private void addEventsToModel(Model model) {

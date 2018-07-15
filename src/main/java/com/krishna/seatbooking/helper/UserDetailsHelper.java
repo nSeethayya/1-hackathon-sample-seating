@@ -1,5 +1,7 @@
 package com.krishna.seatbooking.helper;
 
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,7 +12,10 @@ public class UserDetailsHelper {
 			"MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN",
 			"TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY" };
 
+	public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+
 	public static String findLoggedInUsername() {
+
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {
 			return ((UserDetails) principal).getUsername();
@@ -18,6 +23,4 @@ public class UserDetailsHelper {
 			return principal.toString();
 		}
 	}
-
-	
 }

@@ -20,6 +20,7 @@ public class EventForm {
 	private String name;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createdAt;
+	private String eventDate;
 	private String location;
 	private String state;
 	private String userHosted;

@@ -42,8 +42,8 @@
 		<span>${event.name}</span>
 	</h2>
 	<div style="width: 50%; float: left">
-		Host: <span>${event.userHosted}</span> <br /> Date: <span>${event.createdAt}</span>
-		<br />Location: <span>${event.location}</span> <br />People who are
+		Host: <span>${event.userHosted}</span> <br /> Date: <span>${event.eventDate}</span>
+		<br />Location: <span>${event.location}, ${event.state}</span> <br />People who are
 		attending this event: <span>${event.joinedUsers.size()}</span> <br />
 
 		<table class="table table-bordered"
