@@ -33,6 +33,8 @@
 		<div class="pull-right">
 			<ul class="nav navbar-nav">
 				<form method="POST" action="/logout">
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
 					<li><button type="submit" class="btn navbar-btn btn-danger"
 							id="logout">LogOut</button></li>
 				</form>

@@ -32,6 +32,8 @@
 	<div class="pull-right">
 		<ul class="nav navbar-nav">
 			<form method="POST" action="/logout">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
 				<li><button type="submit" class="btn navbar-btn btn-danger"
 						id="logout">LogOut</button></li>
 			</form>
@@ -43,8 +45,9 @@
 	</h2>
 	<div style="width: 50%; float: left">
 		Host: <span>${event.userHosted}</span> <br /> Date: <span>${event.eventDate}</span>
-		<br />Location: <span>${event.location}, ${event.state}</span> <br />People who are
-		attending this event: <span>${event.joinedUsers.size()}</span> <br />
+		<br />Location: <span>${event.location}, ${event.state}</span> <br />People
+		who are attending this event: <span>${event.joinedUsers.size()}</span>
+		<br />
 
 		<table class="table table-bordered"
 			style="border: 3px solid: #ddd !important;">

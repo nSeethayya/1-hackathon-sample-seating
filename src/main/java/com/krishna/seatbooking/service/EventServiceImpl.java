@@ -55,9 +55,9 @@ public class EventServiceImpl implements EventService {
 		EventForm eventForm = buildEventForm(user, event);
 		eventForm.setJoinedUsers(event.getUsers().parallelStream()
 				.map(usr -> new EventForm.User(usr.getUserName(), usr.getLocation())).collect(Collectors.toList()));
-		eventForm.setMessages(
-				event.getMessages().stream().map(msg -> msg.getUserId().concat(" says:").concat(msg.getMessage()))
-						.collect(Collectors.joining("\n---------------\n")));
+		eventForm.setMessages(event.getMessages().stream()
+				.map(msg -> findUserName(msg.getUserId()).concat(" says:").concat(msg.getMessage()))
+				.collect(Collectors.joining("\n---------------\n")));
 		return eventForm;
 	}
 
@@ -149,7 +149,7 @@ public class EventServiceImpl implements EventService {
 				.eventDate(LocalDateTime.ofInstant(event.getCreatedAt().toInstant(), ZoneId.systemDefault())
 						.format(UserDetailsHelper.DATE_FORMAT))
 				.eventId(event.getId()).name(event.getName()).host(event.getHost().equals(user.getUserName()))
-				.userHosted(event.getHost()).location(event.getLocation()).location(event.getLocation())
+				.userHosted(findUserName(event.getHost())).location(event.getLocation()).location(event.getLocation())
 				.state(event.getState()).state(event.getState())
 				.sameState(user.getCountry().equalsIgnoreCase(event.getState()))
 				.creator(user.getUserName().equals(event.getHost())).joined(isUserJoinedEvent(user, event)).build();
@@ -157,5 +157,13 @@ public class EventServiceImpl implements EventService {
 
 	private boolean isUserJoinedEvent(User user, Event evt) {
 		return evt.getUsers().stream().filter(usr -> usr.getId() == user.getId()).findAny().isPresent();
+	}
+
+	private String findUserName(String userId) {
+		User user = userService.findByUserName(userId);
+		if (user != null)
+			return user.getFirstName().concat(" ").concat(user.getLastName());
+		else
+			return null;
 	}
 }
