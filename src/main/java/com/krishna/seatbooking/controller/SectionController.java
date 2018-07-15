@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.krishna.seatbooking.dto.Seat;
 import com.krishna.seatbooking.dto.SectionForm;
-import com.krishna.seatbooking.helper.UserDetailsHeper;
+import com.krishna.seatbooking.helper.UserDetailsHelper;
 import com.krishna.seatbooking.service.SectionService;
 
 import lombok.val;
@@ -24,8 +24,6 @@ import lombok.val;
 @CrossOrigin
 @Controller
 public class SectionController {
-
-	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	private SectionService sectionService;
 	private SectionFormValidator sectionFormValidator;
@@ -35,12 +33,12 @@ public class SectionController {
 		this.sectionFormValidator = sectionFormValidator;
 	}
 
-	@RequestMapping(value = { "/", "/home" })
+	@RequestMapping(value = { "/home" })
 	public String home(Model model) {
 		model.addAttribute("sectionForm", new SectionForm());
 		val x = sectionService.findAll();
 		model.addAttribute("sections", x);
-		String userName = UserDetailsHeper.findLoggedInUsername();
+		String userName = UserDetailsHelper.findLoggedInUsername();
 		model.addAttribute("username", userName);
 		model.addAttribute("bookingHistory", sectionService.findBookingHistory(userName));
 		return "home";
@@ -57,7 +55,7 @@ public class SectionController {
 	public String bookTickets(@ModelAttribute("sectionForm") SectionForm sectionForm, BindingResult bindingResult,
 			Model model) {
 		sectionFormValidator.validate(sectionForm, bindingResult);
-		String userName = UserDetailsHeper.findLoggedInUsername();
+		String userName = UserDetailsHelper.findLoggedInUsername();
 		model.addAttribute("username", userName);
 		if (bindingResult.hasErrors()) {
 			val x = sectionService.findAll();
@@ -67,7 +65,7 @@ public class SectionController {
 			return "home";
 		}
 		sectionService.bookSeat(sectionForm.getSectionId(), sectionForm.getSeatId(),
-				UserDetailsHeper.findLoggedInUsername());
+				UserDetailsHelper.findLoggedInUsername());
 		return "redirect:/home?ticketBooked";
 	}
 }

@@ -72,7 +72,8 @@
 							<form:errors style="color: red" path="passwordConfirm"></form:errors>
 						</div>
 					</spring:bind>
-
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 				</form:form>
 			</div>
@@ -95,6 +96,8 @@
 						<label for="pwd">Password:</label> <input type="password"
 							style="width: 18%;" class="form-control" id="pwd" name="password">
 					</div>
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
 					<button type="submit" class="btn btn-success">Submit</button>
 				</form>
 			</div>

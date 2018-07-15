@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests().antMatchers("/css/**", "/js/**", "/registration").permitAll().anyRequest()
 				.authenticated().and().formLogin().loginPage("/login").permitAll().and().logout().permitAll()
-				.deleteCookies("JSESSIONID").and().csrf().disable();
+				.deleteCookies("JSESSIONID").and().csrf();
 	}
 
 	@Bean

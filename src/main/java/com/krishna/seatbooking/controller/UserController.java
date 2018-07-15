@@ -4,12 +4,7 @@
 package com.krishna.seatbooking.controller;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.krishna.seatbooking.dto.User;
 import com.krishna.seatbooking.dto.UserForm;
+import com.krishna.seatbooking.helper.UserDetailsHelper;
 import com.krishna.seatbooking.service.UserService;
 
 /**
@@ -29,8 +25,6 @@ import com.krishna.seatbooking.service.UserService;
 @CrossOrigin
 @Controller
 public class UserController {
-
-	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	private UserService userService;
 	private UserFormValidator userFormValidator;
@@ -43,7 +37,7 @@ public class UserController {
 	@RequestMapping("/login")
 	public String login(Model model) {
 		model.addAttribute("userForm", new UserForm());
-		model.addAttribute("countries", addCounties());
+		model.addAttribute("countries", UserDetailsHelper.US_STATES);
 		return "login";
 	}
 
@@ -52,12 +46,12 @@ public class UserController {
 			Model model) {
 		userFormValidator.validate(userForm, bindingResult);
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("countries", addCounties());
+			model.addAttribute("countries", UserDetailsHelper.US_STATES);
 			return "login";
 		}
 		userService.save(buildUser(userForm));
-		userService.autologin(userForm.getEmail(), userForm.getPassword());
-		return "redirect:/home";
+		// userService.autologin(userForm.getEmail(), userForm.getPassword());
+		return "redirect:/login";
 	}
 
 	private User buildUser(UserForm userForm) {
@@ -66,9 +60,5 @@ public class UserController {
 				.location(userForm.getLocation()).country(userForm.getCountry()).password(userForm.getPassword())
 				.createdAt(Calendar.getInstance().getTime()).build();
 		return user;
-	}
-
-	private List<String> addCounties() {
-		return Stream.of("IN", "US", "UK").collect(Collectors.toList());
 	}
 }

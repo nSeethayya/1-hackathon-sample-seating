@@ -22,6 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krishna.seatbooking.dto.Seat;
@@ -43,6 +45,7 @@ public class SectionControllerTest {
 
 	@Before
 	public void initialize() {
+		//CollectionUtils.isEmpty(collection)
 		ObjectMapper objectMapper = new ObjectMapper();
 		JacksonTester.initFields(this, objectMapper);
 	}
@@ -57,7 +60,7 @@ public class SectionControllerTest {
 		List<Section> sections = Stream.of(section).collect(Collectors.toList());
 		given(this.sectionService.findAll()).willReturn(sections);
 
-		ResultActions result = this.mvc.perform(get("/")).andExpect(MockMvcResultMatchers.status().isOk());
+		ResultActions result = this.mvc.perform(get("/home")).andExpect(MockMvcResultMatchers.status().isOk());
 		System.out.println("Result:" + result);
 		Map<String, Object> responseModelMap = result.andReturn().getModelAndView().getModel();
 		System.err.println(responseModelMap.get("sections"));
